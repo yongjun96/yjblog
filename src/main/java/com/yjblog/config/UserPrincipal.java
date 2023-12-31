@@ -18,7 +18,7 @@ public class UserPrincipal extends User {
     public UserPrincipal(com.yjblog.domain.User user){
         super(user.getEmail(), user.getPassword(), List.of(
                 new SimpleGrantedAuthority("ROLE_"+ user.getRole())
-                , new SimpleGrantedAuthority("WRITE")
+                , new SimpleGrantedAuthority("WRITE") // DB에 값 넣는 걸로 변경 필요
         ));
         this.userId = user.getId();
     }
