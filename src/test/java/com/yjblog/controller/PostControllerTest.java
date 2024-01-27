@@ -20,11 +20,13 @@ class PostControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("/api/hello 요청시 hello world를 출력한다.")
+    @DisplayName("/posts 요청시 hello world를 출력한다.")
     void test() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/hello")) // 해당 uri -> application/json
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"제목\", \"content\": \"내용\"}")) // 해당 uri -> application/json
                 .andExpect(MockMvcResultMatchers.status().isOk()) // 예상되는 http 상태
-                .andExpect(MockMvcResultMatchers.content().string("hello world")) //결과값
+                .andExpect(MockMvcResultMatchers.content().string("{}")) //결과값
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -37,7 +39,19 @@ class PostControllerTest {
                         .content("{\"title\": \"제목\", \"content\": \"내용\"}")
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Post Hello"))
+                .andExpect(MockMvcResultMatchers.content().string("{}"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("/posts 요청시 title값은 필수다.")
+    void postsTest2() throws Exception {
+        mockMvc
+                .perform(MockMvcRequestBuilders.post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\" : \"제목\", \"content\" : \"내용\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목"))
                 .andDo(MockMvcResultHandlers.print());
     }
 }
