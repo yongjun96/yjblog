@@ -20,11 +20,15 @@ public class ExceptionController {
     @ResponseBody // 모델을 뷰로 랜더링 하지 않고 반환된 객체를 응답 본문(json으로 만들도록)에 쓰도록 함
     public ErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
 
-        ErrorResponse response = new ErrorResponse("400", "잘못된 요청입니다.");
+        ErrorResponse response = ErrorResponse.builder()
+                .code("400")
+                .message("잘못된 요청입니다.")
+                .build();
 
         for(FieldError fieldError : e.getFieldErrors()){
             response.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
         }
+
         return response;
     }
 }
