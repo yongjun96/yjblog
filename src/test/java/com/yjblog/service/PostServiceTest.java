@@ -1,14 +1,24 @@
-package com.yjblog.controller.service;
+package com.yjblog.service;
 
 import com.yjblog.domain.Post;
 import com.yjblog.repository.PostRepository;
 import com.yjblog.request.PostCreate;
+import com.yjblog.request.PostSearch;
+import com.yjblog.response.PostResponse;
+import com.yjblog.service.PostService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SpringBootTest
 class PostServiceTest {
@@ -56,7 +66,7 @@ class PostServiceTest {
         postRepository.save(requestPost);
 
         // when
-        Post findPost = postService.get(requestPost.getId());
+        PostResponse findPost = postService.get(requestPost.getId());
 
         // then
         Assertions.assertThat(findPost).isNotNull();
@@ -64,6 +74,34 @@ class PostServiceTest {
         Assertions.assertThat(findPost.getTitle()).isEqualTo("제목");
         Assertions.assertThat(findPost.getContent()).isEqualTo("내용");
 
+    }
+
+    @Test
+    @DisplayName("글 첫 1페이지 조회")
+    void postFindAll(){
+
+        // given
+        List<Post> requestPosts = IntStream.range(0, 30)
+                        .mapToObj(i -> Post.builder()
+                                .title("제목"+i)
+                                .content("내용"+i)
+                                .build())
+                        .collect(Collectors.toList());
+
+
+        postRepository.saveAll(requestPosts);
+
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .build();
+
+        // when
+        List<PostResponse> posts = postService.getList(postSearch);
+
+        // then
+        Assertions.assertThat(posts.size()).isEqualTo(10);
+        Assertions.assertThat("제목29").isEqualTo(posts.get(0).getTitle());
+        Assertions.assertThat("제목25").isEqualTo(posts.get(4).getTitle());
     }
 
 }

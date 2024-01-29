@@ -1,18 +1,18 @@
 package com.yjblog.controller;
 
-import com.yjblog.controller.service.PostService;
 import com.yjblog.domain.Post;
+import com.yjblog.request.PostSearch;
+import com.yjblog.service.PostService;
 import com.yjblog.request.PostCreate;
+import com.yjblog.response.PostResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController // 데이터 기반 API응답 생성
@@ -33,12 +33,19 @@ public class PostController {
     }
 
     /**
-     * /posts -> 글 전체 조회 (검색 + 페이징)
      * /posts/{postId} -> 글 한개만 조회
      */
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") @Valid Long id){
-        Post post = postService.get(id);
+    public PostResponse get(@PathVariable(name = "postId") @Valid Long id){
+        PostResponse post = postService.get(id);
         return post;
+    }
+
+    /**
+     * /posts -> 글 전체 조회 (검색 + 페이징)
+     */
+    @GetMapping("/posts")
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
+        return postService.getList(postSearch);
     }
 }

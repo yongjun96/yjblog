@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yjblog.domain.Post;
 import com.yjblog.repository.PostRepository;
 import com.yjblog.request.PostCreate;
+import com.yjblog.response.PostResponse;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,11 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -118,11 +125,11 @@ class PostControllerTest {
 
 
     @Test
-    @DisplayName("글 한개 조회")
+    @DisplayName("/posts/{postId} 글 1개 조회")
     void postFindById() throws Exception {
         //given
         Post post = Post.builder()
-                .title("제목임~")
+                .title("제목임 10글자 넘길거임~~~!!!!!!")
                 .content("내용임~")
                 .build();
 
@@ -134,9 +141,36 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(post.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목임~"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목임 10글자 넘길거임~~~!!!!!!"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("내용임~"))
                 .andDo(MockMvcResultHandlers.print());
 
     }
+
+    @Test
+    @DisplayName("/posts 글 여러개 조회")
+    void postFindAll() throws Exception {
+        //given
+        List<Post> requestPosts = IntStream.range(0, 30)
+                .mapToObj(i -> Post.builder()
+                        .title("제목"+i)
+                        .content("내용"+i)
+                        .build())
+                .collect(Collectors.toList());
+
+        postRepository.saveAll(requestPosts);
+
+        // expected -> when + then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/posts?page=0&size=5")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(5)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("제목29"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].content").value("내용29"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
+
 }
