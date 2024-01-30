@@ -181,7 +181,7 @@ class PostServiceTest {
         postRepository.save(post);
 
         // expected
-        Assertions.assertThatThrownBy(() -> postService.delete(post.getId()))
+        Assertions.assertThatThrownBy(() -> postService.delete(post.getId() + 1L))
                 .isInstanceOf(PostNotFound.class)
                 .hasMessageContaining("존재하지 않는 글입니다.");
 

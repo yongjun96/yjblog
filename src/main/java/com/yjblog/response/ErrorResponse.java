@@ -1,5 +1,7 @@
 package com.yjblog.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +20,21 @@ import java.util.Map;
  */
 
 @Getter
+// 비어 있지 않은 객체만 json으로 보냄
+// 잘 사용하지 않음
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class ErrorResponse {
 
     //회사 마다 팀마다 규칙이 다름
     private final String code;
     private final String message;
-    private final Map<String, String> validation = new HashMap<>();
+    private Map<String, String> validation;
 
     @Builder
-    public ErrorResponse(String code, String message) {
+    public ErrorResponse(String code, String message, Map<String, String> validation) {
         this.code = code;
         this.message = message;
+        this.validation = validation != null ? validation : new HashMap<>();
     }
 
     public void addValidation(String fieldName, String errorMessage){

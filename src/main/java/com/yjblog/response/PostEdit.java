@@ -3,8 +3,10 @@ package com.yjblog.response;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class PostEdit {
 
     @NotBlank(message = "제목을 입력하세요.")
