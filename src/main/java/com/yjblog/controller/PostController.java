@@ -2,6 +2,7 @@ package com.yjblog.controller;
 
 import com.yjblog.domain.Post;
 import com.yjblog.request.PostSearch;
+import com.yjblog.response.PostEdit;
 import com.yjblog.service.PostService;
 import com.yjblog.request.PostCreate;
 import com.yjblog.response.PostResponse;
@@ -36,8 +37,8 @@ public class PostController {
      * /posts/{postId} -> 글 한개만 조회
      */
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name = "postId") @Valid Long id){
-        PostResponse post = postService.get(id);
+    public PostResponse get(@PathVariable(name = "postId") @Valid Long postId){
+        PostResponse post = postService.get(postId);
         return post;
     }
 
@@ -47,5 +48,15 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public void postEdit(@RequestBody @Valid PostEdit postEdit, @PathVariable(name = "postId") Long postId){
+        postService.edit(postId, postEdit);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void postDelete(@PathVariable(name = "postId") Long postId){
+        postService.delete(postId);
     }
 }

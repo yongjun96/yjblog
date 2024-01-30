@@ -4,18 +4,16 @@ import com.yjblog.domain.Post;
 import com.yjblog.repository.PostRepository;
 import com.yjblog.request.PostCreate;
 import com.yjblog.request.PostSearch;
+import com.yjblog.response.PostEdit;
 import com.yjblog.response.PostResponse;
-import com.yjblog.service.PostService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -102,6 +100,50 @@ class PostServiceTest {
         Assertions.assertThat(posts.size()).isEqualTo(10);
         Assertions.assertThat("제목29").isEqualTo(posts.get(0).getTitle());
         Assertions.assertThat("제목25").isEqualTo(posts.get(4).getTitle());
+    }
+
+    @Test
+    @DisplayName("글 수정")
+    void postModify(){
+
+        //given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목입니다.")
+                .build();
+
+        //when
+        postService.edit(post.getId(), postEdit);
+
+        //then
+        Post findPost = postRepository.findById(post.getId())
+                .orElseThrow(()-> new RuntimeException("해당아이디에 글이 없습니다."));
+
+        Assertions.assertThat(post.getId()).isEqualTo(findPost.getId());
+        Assertions.assertThat(findPost.getTitle()).isEqualTo(postEdit.getTitle());
+        Assertions.assertThat(findPost.getContent()).isEqualTo(findPost.getContent());
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void postDelete(){
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        postRepository.save(post);
+
+        postService.delete(post.getId());
+
+        Assertions.assertThat(postRepository.count()).isEqualTo(0);
+
     }
 
 }

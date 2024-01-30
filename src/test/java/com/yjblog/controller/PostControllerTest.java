@@ -1,9 +1,11 @@
 package com.yjblog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yjblog.domain.Post;
 import com.yjblog.repository.PostRepository;
 import com.yjblog.request.PostCreate;
+import com.yjblog.response.PostEdit;
 import com.yjblog.response.PostResponse;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.MatcherAssert;
@@ -171,6 +173,46 @@ class PostControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    @DisplayName("/posts/{postId} 글 수정")
+    void postEdit() throws Exception {
 
+        Post post = Post.builder()
+                .title("제목임")
+                .content("내용임")
+                .build();
 
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목임")
+                .content("수정된 내용임")
+                .build();
+
+        String postEditJson = objectMapper.writeValueAsString(postEdit);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/posts/{postId}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postEditJson)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void postDelete() throws Exception {
+
+        Post post = Post.builder()
+                .title("제목임")
+                .content("내용임")
+                .build();
+
+        postRepository.save(post);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/posts/{postId}", post.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }

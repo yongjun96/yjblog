@@ -1,5 +1,6 @@
 package com.yjblog.domain;
 
+import com.yjblog.response.PostEdit;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,5 +27,15 @@ public class Post {
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void edit(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void edit(PostEdit postEdit) {
+        this.title = postEdit.getTitle() != null ? postEdit.getTitle() : this.title;
+        this.content = postEdit.getContent() != null ? postEdit.getContent() : this.content;
     }
 }
