@@ -1,6 +1,7 @@
 package com.yjblog.service;
 
 import com.yjblog.domain.Post;
+import com.yjblog.exception.PostNotFound;
 import com.yjblog.repository.PostRepository;
 import com.yjblog.request.PostCreate;
 import com.yjblog.request.PostSearch;
@@ -36,7 +37,7 @@ public class PostService {
     public PostResponse get(Long id) {
 
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         PostResponse postResponse = PostResponse.builder()
                 .id(post.getId())
@@ -61,14 +62,14 @@ public class PostService {
     @Transactional
     public void edit(Long id, PostEdit postEdit){
         Post findPost = postRepository.findById(id).
-                orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                orElseThrow(() -> new PostNotFound());
 
         findPost.edit(postEdit);
     }
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         postRepository.delete(post);
     }

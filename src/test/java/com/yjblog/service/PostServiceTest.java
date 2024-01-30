@@ -1,6 +1,7 @@
 package com.yjblog.service;
 
 import com.yjblog.domain.Post;
+import com.yjblog.exception.PostNotFound;
 import com.yjblog.repository.PostRepository;
 import com.yjblog.request.PostCreate;
 import com.yjblog.request.PostSearch;
@@ -74,6 +75,7 @@ class PostServiceTest {
 
     }
 
+
     @Test
     @DisplayName("글 첫 1페이지 조회")
     void postFindAll(){
@@ -144,6 +146,64 @@ class PostServiceTest {
 
         Assertions.assertThat(postRepository.count()).isEqualTo(0);
 
+    }
+
+    @Test
+    @DisplayName("글 수정 (실패 케이스 : 존재하지 않는 글입니다.)")
+    void postModifyFail(){
+
+        //given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목입니다.")
+                .build();
+
+        // expected
+        Assertions.assertThatThrownBy(() -> postService.edit(post.getId() + 1L, postEdit))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
+    }
+
+    @Test
+    @DisplayName("글 삭제 (실패 케이스 : 존재하지 않는 글입니다.)")
+    void postDeleteFail(){
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        postRepository.save(post);
+
+        // expected
+        Assertions.assertThatThrownBy(() -> postService.delete(post.getId()))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
+
+    }
+
+
+    @Test
+    @DisplayName("글 한개 조회 (실패 케이스 : 존재하지 않는 글입니다.)")
+    void postFindByIdFail(){
+
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        postRepository.save(post);
+
+        // expected
+        Assertions.assertThatThrownBy(() -> postService.get(post.getId() + 1L))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
     }
 
 }
