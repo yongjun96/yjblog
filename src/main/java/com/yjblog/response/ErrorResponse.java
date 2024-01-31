@@ -28,7 +28,8 @@ public class ErrorResponse {
     //회사 마다 팀마다 규칙이 다름
     private final String code;
     private final String message;
-    private Map<String, String> validation;
+    private final Map<String, String> validation;
+    //private final T data;
 
     @Builder
     public ErrorResponse(String code, String message, Map<String, String> validation) {
