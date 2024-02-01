@@ -26,10 +26,10 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/foo")
-    public String foo(@RequestAttribute("username") String username){
+    public Long foo(UserSession userSession){
         // @RequestAttribute로 HttpServletRequest로 보낸 값을 가져올 수있음
-        log.info(">>> username : {}", username);
-        return username;
+        log.info(">>> userSession : {}", userSession.id);
+        return userSession.id;
     }
 
     @GetMapping("/bar")

@@ -10,13 +10,13 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-//    @Override
-//    // AuthInterceptor 를 메모리에 올림
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new AuthInterceptor()) // 생성했던 인터셉터를 넣음
-//                .addPathPatterns("/foo/**") // 인증이 있어야만 접근 가능
-//                .excludePathPatterns("/error", "/favicon.ioc"); // 인증 없이 접근 가능
-//    }
+    @Override
+    // AuthInterceptor 를 메모리에 올림
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AuthInterceptor()) // 생성했던 인터셉터를 넣음
+                //.addPathPatterns("/foo/**") // 인증이 있어야만 접근 가능
+                .excludePathPatterns("/error", "/favicon.ioc", "/foo/**"); // 인증 없이 접근 가능
+    }
 
 
     @Override
