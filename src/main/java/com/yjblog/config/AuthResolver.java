@@ -26,14 +26,18 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
         // AuthInterceptor의 preHandle에서 accessToken을 만들어서 반환한 것을 잡아서 씀
         // NativeWebRequest 를 이용해서 accessToken을 가져옴
-        String accessToken = webRequest.getParameter("accessToken");
+        // getParameter 다른 정보랑 충돌이 있을 수 있으므로 header를 통해 가져오는 것으로 수정해야 함.
+        //String accessToken = webRequest.getParameter("accessToken");
+
+        String accessToken = webRequest.getHeader("Authorization");
 
         if(accessToken == null || accessToken.equals("")){
             throw new Unauthorized();
         }
 
-        UserSession userSession = new UserSession();
-        userSession.name = accessToken;
-        return userSession;
+        //데이터 베이스 사용자 확인 작업
+        // ex). UserSession userSession = new UserSession(DB 에서 넘어온 ID);
+
+        return new UserSession(1L);
     }
 }

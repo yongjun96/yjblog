@@ -1,0 +1,6 @@
+### 테스트 요청
+# 인텔리제이 http 요청 알아보기
+
+GET http://localhost:8080/foo
+Content-Type: application/json
+Authorization: 호
