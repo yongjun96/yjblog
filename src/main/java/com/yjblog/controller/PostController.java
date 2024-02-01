@@ -1,5 +1,6 @@
 package com.yjblog.controller;
 
+import com.yjblog.config.data.UserSession;
 import com.yjblog.domain.Post;
 import com.yjblog.exception.InvalidRequest;
 import com.yjblog.request.PostSearch;
@@ -7,6 +8,7 @@ import com.yjblog.response.PostEdit;
 import com.yjblog.service.PostService;
 import com.yjblog.request.PostCreate;
 import com.yjblog.response.PostResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +25,18 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/test")
-    public String test(){
-        return "test";
+    @GetMapping("/foo")
+    public String foo(UserSession userSession){
+        // @RequestAttribute로 HttpServletRequest로 보낸 값을 가져올 수있음
+        log.info(">>> userSession : {}", userSession.name);
+        return userSession.name;
     }
 
-    @GetMapping("/foo")
-    public String foo(){
-        return "foo";
+    @GetMapping("/bar")
+    public String bar(UserSession userSession){
+        return "인증이 필요한 페이지";
     }
+
 
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate request) {

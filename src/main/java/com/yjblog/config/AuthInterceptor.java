@@ -17,10 +17,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         // getParameter 는 null 값이 있을 수 있음
         String accessToken = request.getParameter("accessToken");
-        if(accessToken != null && accessToken.equals("yyongjun")){
+        if(accessToken != null && !accessToken.equals("")){
+            // HttpServletRequest 의 setAttribute 를 통해서 key, value로 값을 보낼 수 있음
+            // controller 에서 받을 때는 @RequestAttribute("username") String username 방식으로 파라메터로 받기 가능
+            request.setAttribute("username", accessToken);
             return true;
         }
-        // 실패의 경우
+        // 실패의 경우 (만들어 놓은 Custom exception을 반환)
         throw new Unauthorized();
     }
 
