@@ -47,7 +47,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 요청")
+    @DisplayName("글 작성 /posts 요청")
     void postsTest() throws Exception {
 
         //given
@@ -72,7 +72,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 요청시 title값은 필수다.")
+    @DisplayName("글 작성 /posts 요청시 title값은 필수다.")
     void titleNullPostsTest() throws Exception {
 
         //given
