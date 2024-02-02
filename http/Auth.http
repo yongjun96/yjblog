@@ -1,0 +1,10 @@
+### 로그인
+# 인텔리제이 http 요청 알아보기
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "yongjun96@gmail.com",
+  "password": "5555"
+}

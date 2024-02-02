@@ -1,0 +1,1 @@
+insert into `users` (name, email, password, create_at, update_at) values ('김용준', 'yongjun96@gmail.com', '1234', now(), now())
