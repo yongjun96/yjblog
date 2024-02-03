@@ -1,8 +1,13 @@
 package com.yjblog.controller;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yjblog.domain.Post;
+import com.yjblog.domain.User;
+import com.yjblog.exception.InvalidSigningInformation;
 import com.yjblog.repository.PostRepository;
+import com.yjblog.repository.UserRepository;
+import com.yjblog.request.Login;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +36,9 @@ class PostControllerDocTest {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;

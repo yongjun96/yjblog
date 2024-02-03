@@ -3,8 +3,11 @@ package com.yjblog.domain;
 import com.yjblog.domain.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,4 +25,20 @@ public class User extends BaseTimeEntity {
     private String email;
 
     private String password;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Session> sessions;
+
+    @Builder
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public void addSession() {
+        sessions.add(Session.builder()
+                        .user(this)
+                        .build());
+    }
 }

@@ -101,15 +101,15 @@ clean.doLast {
     file(querydslDir).deleteDir()
 }
 
-// openapi3가 먼저 실행 - doFrist를 통한 Header 설정 (글에서 자세하게 설명)
+// openapi3가 먼저 실행 - doFrist를 통한 Header 설정도 가능
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
 /*    doFirst {
         file("${openapi3.outputDirectory}/openapi3.json")
     }*/
     copy {
-        from 'build/resources/main/static/docs'
-        into 'src/main/resources/static/docs'
+        from 'build/resources/main/static/docs/'
+        into 'src/main/resources/static/docs/'
     }
 
 }
@@ -118,6 +118,6 @@ tasks.withType(GenerateSwaggerUI) {
 bootJar {
     dependsOn generateSwaggerUISample
     from("${generateSwaggerUISample.outputDir}") {
-        into 'src/main/resources/static/docs'
+        into 'src/main/resources/static/docs/'
     }
 }

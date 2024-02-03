@@ -57,7 +57,7 @@ public class PostController {
      * /posts -> 글 전체 조회 (검색 + 페이징)
      */
     @GetMapping("/posts")
-    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
+    public List<PostResponse> getList(@ModelAttribute @Valid PostSearch postSearch){
         return postService.getList(postSearch);
     }
 
