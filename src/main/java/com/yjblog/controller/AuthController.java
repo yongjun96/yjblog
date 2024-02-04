@@ -5,6 +5,7 @@ import com.yjblog.exception.InvalidRequest;
 import com.yjblog.exception.InvalidSigningInformation;
 import com.yjblog.repository.UserRepository;
 import com.yjblog.request.Login;
+import com.yjblog.response.SessionResponse;
 import com.yjblog.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/login")
-    public void login(@RequestBody @Valid Login login){
+    public SessionResponse login(@RequestBody @Valid Login login){
         // json 아이디/비밀번호
         log.info(">>> login : {}", login);
 
         // DB에서 조회
-        User user = authService.signing(login);
+        String accessToken = authService.signing(login);
 
         // 토큰을 응답
+        return new SessionResponse(accessToken);
 
     }
 }

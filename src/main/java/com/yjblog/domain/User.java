@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +28,7 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Session> sessions;
+    private List<Session> sessions = new ArrayList<>();
 
     @Builder
     public User(String name, String email, String password) {
@@ -36,9 +37,13 @@ public class User extends BaseTimeEntity {
         this.password = password;
     }
 
-    public void addSession() {
-        sessions.add(Session.builder()
-                        .user(this)
-                        .build());
+    public Session addSession() {
+         Session session = Session.builder()
+                 .user(this)
+                 .build();
+
+         sessions.add(session);
+
+         return session;
     }
 }

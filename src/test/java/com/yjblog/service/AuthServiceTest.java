@@ -1,5 +1,6 @@
 package com.yjblog.service;
 
+import com.yjblog.domain.Session;
 import com.yjblog.domain.User;
 import com.yjblog.repository.UserRepository;
 import com.yjblog.request.Login;
@@ -23,7 +24,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("사용자 로그인")
-    void login(){
+    void login() {
 
         //given
         Login login = Login.builder()
@@ -32,12 +33,9 @@ class AuthServiceTest {
                 .build();
 
         //when
-        User user = authService.signing(login);
+        String accessToken = authService.signing(login);
 
         //then
-        assertThat(user.getEmail()).isEqualTo(login.getEmail());
-        assertThat(user.getPassword()).isEqualTo(login.getPassword());
-
+        assertThat(accessToken).isNotNull();
     }
-
 }
