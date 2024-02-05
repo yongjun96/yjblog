@@ -1,6 +1,8 @@
 package com.yjblog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yjblog.domain.Session;
 import com.yjblog.domain.User;
 import com.yjblog.repository.SessionRepository;
 import com.yjblog.repository.UserRepository;
@@ -122,5 +124,49 @@ class AuthControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken", Matchers.notNullValue()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+
+    @Test
+    @DisplayName("로그인 후 권한이 필요한 페이지 접속")
+    void authLogin() throws Exception {
+
+        User user = User.builder()
+                .name("yongjun")
+                .email("yongjun96@gmail.com")
+                .password("1234")
+                .build();
+
+        Session session = user.addSession();
+
+        userRepository.save(user);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/foo")
+                        .header("authorization", session.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+
+    @Test
+    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지에 접속할 수 없다.")
+    void authLoginFail() throws Exception {
+
+        User user = User.builder()
+                .name("yongjun")
+                .email("yongjun96@gmail.com")
+                .password("1234")
+                .build();
+
+        Session session = user.addSession();
+
+        userRepository.save(user);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/foo")
+                        .header("authorization", session.getAccessToken() + "-other")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 }
