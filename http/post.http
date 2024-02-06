@@ -3,4 +3,4 @@
 
 GET http://localhost:8080/foo
 Content-Type: application/json
-Authorization: ㅗㅓㅏㅗㅓㅏㅗ
+cookie: 7a808de8-48aa-498f-93c7-40cebb521934

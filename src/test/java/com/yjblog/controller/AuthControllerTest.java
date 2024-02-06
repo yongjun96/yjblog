@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yjblog.domain.Session;
 import com.yjblog.domain.User;
+import com.yjblog.exception.InvalidSigningInformation;
+import com.yjblog.exception.Unauthorized;
 import com.yjblog.repository.SessionRepository;
 import com.yjblog.repository.UserRepository;
 import com.yjblog.request.Login;
@@ -101,7 +103,6 @@ class AuthControllerTest {
 
 
     @Test
-    @Transactional
     @DisplayName("로그인 성공 후 session 응답")
     void findByIdSessionResponseTest() throws Exception {
 
@@ -127,9 +128,55 @@ class AuthControllerTest {
     }
 
 
+// DB의 저장된 세션값을 이용해서 권한을 인증받는 테스트. 지금은 쿠키로 사용.
+//    @Test
+//    @DisplayName("로그인 후 권한이 필요한 페이지 접속")
+//    void authLogin() throws Exception {
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        Session session = user.addSession();
+//
+//        userRepository.save(user);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.get("/foo")
+//                        .header("authorization", session.getAccessToken())
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
+
+
+// DB의 저장된 세션값을 이용해서 권한을 인증받는 테스트. 지금은 쿠키로 사용.
+//    @Test
+//    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지에 접속할 수 없다.")
+//    void authLoginFail() throws Exception {
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        Session session = user.addSession();
+//
+//        userRepository.save(user);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.get("/foo")
+//                        .header("authorization", session.getAccessToken() + "-other")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+//    }
+
+
     @Test
-    @DisplayName("로그인 후 권한이 필요한 페이지 접속")
-    void authLogin() throws Exception {
+    @DisplayName("/auth/cookieLogin, 로그인 성공 후, 쿠키 발급")
+    void authCookieLogin() throws Exception {
 
         User user = User.builder()
                 .name("yongjun")
@@ -137,21 +184,31 @@ class AuthControllerTest {
                 .password("1234")
                 .build();
 
-        Session session = user.addSession();
-
         userRepository.save(user);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/foo")
-                        .header("authorization", session.getAccessToken())
+        Login login = Login.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
+                        .content(objectMapper.writeValueAsString(login))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.cookie().value("SESSION", Matchers.notNullValue()))
+                .andExpect(MockMvcResultMatchers.cookie().domain("SESSION", "localhost"))
+                .andExpect(MockMvcResultMatchers.cookie().path("SESSION", "/"))
+                .andExpect(MockMvcResultMatchers.cookie().maxAge("SESSION", 2592000))
+                .andExpect(MockMvcResultMatchers.cookie().httpOnly("SESSION", true))
+                .andExpect(MockMvcResultMatchers.cookie().sameSite("SESSION", "strict"))
+                .andExpect(MockMvcResultMatchers.cookie().secure("SESSION", false))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
 
     @Test
-    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지에 접속할 수 없다.")
-    void authLoginFail() throws Exception {
+    @DisplayName("/auth/cookieLogin, 로그인 실패")
+    void authCookieLoginFail() throws Exception {
 
         User user = User.builder()
                 .name("yongjun")
@@ -159,14 +216,17 @@ class AuthControllerTest {
                 .password("1234")
                 .build();
 
-        Session session = user.addSession();
-
         userRepository.save(user);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/foo")
-                        .header("authorization", session.getAccessToken() + "-other")
+        Login login = Login.builder()
+                .email(user.getEmail())
+                .password("12345")
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
+                        .content(objectMapper.writeValueAsString(login))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }

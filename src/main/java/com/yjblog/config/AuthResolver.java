@@ -4,17 +4,32 @@ import com.yjblog.config.data.UserSession;
 import com.yjblog.domain.Session;
 import com.yjblog.exception.Unauthorized;
 import com.yjblog.repository.SessionRepository;
+import com.yjblog.response.SessionResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.crypto.SecretKey;
+import java.util.Base64;
+
+@Slf4j
 @RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
+
+    private static final String KEY = Base64.getEncoder().encodeToString(Jwts.SIG.HS256.key().build().getEncoded());
 
     @Override
     // controller 로 넘어 오는 요청이 @RequestAttribute("username") String username 정말로 이 Dto 가 맞아? 물어 보는 메소드
@@ -35,18 +50,39 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
         // getParameter 다른 정보랑 충돌이 있을 수 있으므로 header를 통해 가져오는 것으로 수정해야 함.
         //String accessToken = webRequest.getParameter("accessToken");
 
-        String accessToken = webRequest.getHeader("Authorization");
+        // 헤더로 세션 받기
+        //String accessToken = webRequest.getHeader("Authorization");
 
-        if(accessToken == null || accessToken.equals("")){
-            throw new Unauthorized();
+        // ResponseCookie 로 세션받기
+        //HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+
+//        if(servletRequest == null){
+//            log.error("servletRequest null");
+//            throw new Unauthorized();
+//        }
+//
+//        Cookie[] cookies = servletRequest.getCookies();
+
+        String jws = webRequest.getHeader("Authorization");
+
+        if(jws == null || jws.equals("")){
+            new Unauthorized();
         }
 
-        Session session = sessionRepository.findByAccessToken(accessToken)
-                .orElseThrow(() -> new Unauthorized());
+        SecretKey key = Jwts.SIG.HS256.key().build();
 
-        //데이터 베이스 사용자 확인 작업
+        try {
+            Jws<Claims> claimsJws = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(jws);
 
+            log.info(" >>>>>> {}", claimsJws);
+        } catch (JwtException e) {
+            throw new Unauthorized();
+            //don't trust the JWT!
+        }
 
-        return new UserSession(session.getUser().getId());
+        return new SessionResponse(jws);
     }
 }

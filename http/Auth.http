@@ -1,4 +1,4 @@
-### 로그인
+### 로그인 후, DB에 세션저장
 # 인텔리제이 http 요청 알아보기
 
 POST http://localhost:8080/auth/login
@@ -8,3 +8,32 @@ Content-Type: application/json
   "email": "yongjun96@gmail.com",
   "password": "1234"
 }
+
+
+### 로그인 후, 쿠키생성
+
+POST http://localhost:8080/auth/cookieLogin
+Content-Type: application/json
+
+{
+  "email": "yongjun96@gmail.com",
+  "password": "1234"
+}
+
+### 로그인 후, jwt생성
+
+POST http://localhost:8080/auth/jwtLogin
+Content-Type: application/json
+
+{
+  "email": "yongjun96@gmail.com",
+  "password": "1234"
+}
+
+
+### 쿠키로 인증 받기
+
+GET http://localhost:8080/foo
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb2UifQ.pISnda7eZUQDkkzknY0dCyUtXos52hq6CXrvygU3JJI
+//cookie: SESSION=bccf0b0b-6278-41f4-bb0c-91ab9ed9ed29
