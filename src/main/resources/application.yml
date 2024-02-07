@@ -31,3 +31,19 @@ springdoc:
   swagger-ui:
     url: /docs/openapi3.json
     path: /docs/swagger
+
+custom:
+  jwt:
+    secretKey: javaSpringBootProjectProtectedKimYongJunBlogJsonWebTokenSecretKey
+
+yong-jun-blog:
+  test-data: "김용준의 블로그입니다."
+  array:
+    - "김"
+    - "용"
+    - "준"
+  info:
+    name: "yongJun"
+    first-name: "kim"
+    post: "seoul"
+

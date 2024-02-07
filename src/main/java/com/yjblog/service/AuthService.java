@@ -25,4 +25,13 @@ public class AuthService {
 
         return session.getAccessToken();
     }
+
+    @Transactional
+    public Long jwtSigning(Login login){
+
+        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+                .orElseThrow(() -> new InvalidSigningInformation());
+
+        return user.getId();
+    }
 }

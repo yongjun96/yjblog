@@ -61,6 +61,10 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
+    // build -> classes -> java -> main -> META-INF 경로에 spring-configuration-metadata.json 생성
+    // 인텔리제이 제이가 인식할 수 있도록 해줌
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     // SwaggerUI 추가
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     // 7. RestDocs 추가

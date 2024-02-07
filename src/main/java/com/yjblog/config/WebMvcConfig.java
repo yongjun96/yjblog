@@ -1,10 +1,10 @@
 package com.yjblog.config;
 
+import com.yjblog.config.jwt.JwtProvider;
 import com.yjblog.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -14,6 +14,10 @@ import java.util.List;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final SessionRepository sessionRepository;
+
+    private final JwtProvider jwtProvider;
+
+    private final AppConfig appConfig;
 
 //    @Override
 //    // AuthInterceptor 를 메모리에 올림
@@ -27,6 +31,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     // AuthResolver 를 메모리에 올림
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthResolver(sessionRepository)); // 생성했던 리솔버를 넣음
+        resolvers.add(new AuthResolver(sessionRepository, jwtProvider, appConfig)); // 생성했던 리솔버를 넣음
     }
 }
