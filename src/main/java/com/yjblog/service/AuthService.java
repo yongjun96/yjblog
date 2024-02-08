@@ -1,11 +1,10 @@
 package com.yjblog.service;
 
+import com.yjblog.crypto.PasswordEncoder;
 import com.yjblog.domain.Session;
 import com.yjblog.domain.User;
 import com.yjblog.exception.AlreadExistsEmailException;
-import com.yjblog.exception.InvalidRequest;
 import com.yjblog.exception.InvalidSigningInformation;
-import com.yjblog.exception.Unauthorized;
 import com.yjblog.repository.UserRepository;
 import com.yjblog.request.Login;
 import com.yjblog.request.Signup;
@@ -20,6 +19,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public String signing(Login login){
@@ -35,10 +35,18 @@ public class AuthService {
     @Transactional
     public Long jwtSigning(Login login){
 
-        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+//        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+//                .orElseThrow(() -> new InvalidSigningInformation());
+
+        User findEmailUser = userRepository.findByEmail(login.getEmail())
                 .orElseThrow(() -> new InvalidSigningInformation());
 
-        return user.getId();
+        boolean matches = passwordEncoder.matches(login.getPassword(), findEmailUser.getPassword());
+        if(!matches){
+            throw new InvalidSigningInformation();
+        }
+
+        return findEmailUser.getId();
     }
 
     public User signup(Signup signup) {
@@ -49,9 +57,11 @@ public class AuthService {
             throw new AlreadExistsEmailException();
         }
 
+        String password = passwordEncoder.passwordEncoder(signup.getPassword());
+
         User user = User.builder()
                 .name(signup.getName())
-                .password(signup.getPassword())
+                .password(password)
                 .email(signup.getEmail())
                 .build();
 

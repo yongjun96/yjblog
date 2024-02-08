@@ -1,12 +1,12 @@
 package com.yjblog.service;
 
-import com.yjblog.domain.Session;
+import com.yjblog.crypto.PasswordEncoder;
 import com.yjblog.domain.User;
 import com.yjblog.exception.AlreadExistsEmailException;
+import com.yjblog.exception.InvalidSigningInformation;
 import com.yjblog.repository.UserRepository;
 import com.yjblog.request.Login;
 import com.yjblog.request.Signup;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class AuthServiceTest {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AuthService authService;
+    @Autowired private UserRepository userRepository;
+    @Autowired private AuthService authService;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void clean(){
@@ -35,10 +33,12 @@ class AuthServiceTest {
     void login() {
 
         //given
+        String encodePassword = passwordEncoder.passwordEncoder("1234");
+
         User user = User.builder()
                 .email("yongjun96@gmail.com")
-                .password("1234")
-                .name("김용준")
+                .name("kimYongJun")
+                .password(encodePassword)
                 .build();
 
         userRepository.save(user);
@@ -49,10 +49,32 @@ class AuthServiceTest {
                 .build();
 
         //when
-        String accessToken = authService.signing(login);
+        Long userId = authService.jwtSigning(login);
 
         //then
-        assertThat(accessToken).isNotNull();
+        assertThat(userId).isEqualTo(user.getId());
+    }
+
+    @Test
+    @DisplayName("사용자 로그인 (비밀번호 틀림)")
+    void loginPasswordFail() {
+
+        //given
+        Signup signup = Signup.builder()
+                .email("yongjun96@gmail.com")
+                .name("kimYongJun")
+                .password("1234")
+                .build();
+
+        User user = authService.signup(signup);
+
+        Login login = Login.builder()
+                .email(signup.getEmail())
+                .password("12345")
+                .build();
+
+        //when
+        assertThrows(InvalidSigningInformation.class, () -> authService.jwtSigning(login));
     }
 
     @Test
@@ -68,12 +90,14 @@ class AuthServiceTest {
 
         //when
         User user = authService.signup(signup);
+        boolean matches = passwordEncoder.matches("1234", user.getPassword());
 
         //then
-        Assertions.assertThat(1).isEqualTo(userRepository.count());
-        Assertions.assertThat(user.getEmail()).isEqualTo(signup.getEmail());
-        Assertions.assertThat(user.getName()).isEqualTo(signup.getName());
-        Assertions.assertThat(user.getPassword()).isEqualTo(signup.getPassword());
+        assertThat(1).isEqualTo(userRepository.count());
+        assertThat(user.getEmail()).isEqualTo(signup.getEmail());
+        assertThat(user.getName()).isEqualTo(signup.getName());
+        assertThat(matches).isTrue();
+
     }
 
 
