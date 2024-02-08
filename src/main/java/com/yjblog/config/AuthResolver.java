@@ -16,6 +16,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+/**
+ * Spring Security 를 사용할 것이기 때문에 사용하지 않을 예정
+ * todo Spring Security 를 사용할 것이기 때문에 사용하지 않을 예정
+ */
+
 @Slf4j
 @RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver {

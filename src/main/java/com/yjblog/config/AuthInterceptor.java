@@ -7,6 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+
+/**
+ * Spring Security 를 사용할 것이기 때문에 사용하지 않을 예정
+ * todo Spring Security 를 사용할 것이기 때문에 사용하지 않을 예정
+ */
+
 @Slf4j
 public class AuthInterceptor implements HandlerInterceptor {
 

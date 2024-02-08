@@ -21,16 +21,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public String signing(Login login){
-
-        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
-                .orElseThrow(() -> new InvalidSigningInformation());
-
-        Session session = user.addSession();
-
-        return session.getAccessToken();
-    }
+//    @Transactional
+//    public String signing(Login login){
+//
+//        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+//                .orElseThrow(() -> new InvalidSigningInformation());
+//
+//        Session session = user.addSession();
+//
+//        return session.getAccessToken();
+//    }
 
     @Transactional
     public Long jwtSigning(Login login){

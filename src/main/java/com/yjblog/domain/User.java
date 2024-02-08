@@ -27,8 +27,8 @@ public class User extends BaseTimeEntity {
 
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Session> sessions = new ArrayList<>();
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+//    private List<Session> sessions = new ArrayList<>();
 
     @Builder
     public User(String name, String email, String password) {
@@ -37,13 +37,17 @@ public class User extends BaseTimeEntity {
         this.password = password;
     }
 
-    public Session addSession() {
-         Session session = Session.builder()
-                 .user(this)
-                 .build();
-
-         sessions.add(session);
-
-         return session;
-    }
+    /**
+     * Spring Security 를 사용할 것이기 때문에 사용하지 않을 예정
+     * todo Spring Security 를 사용할 것이기 때문에 사용하지 않을 예정
+     */
+//    public Session addSession() {
+//         Session session = Session.builder()
+//                 .user(this)
+//                 .build();
+//
+//         sessions.add(session);
+//
+//         return session;
+//    }
 }

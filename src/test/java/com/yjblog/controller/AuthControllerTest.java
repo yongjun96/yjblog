@@ -49,84 +49,83 @@ class AuthControllerTest {
         userRepository.deleteAll();
     }
 
-    @Test
-    @DisplayName("로그인 성공")
-    void findByIdTest() throws Exception {
-
-        Login login = Login.builder()
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        User user = User.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        userRepository.save(user);
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(login)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-
-    @Test
-    @Transactional
-    @DisplayName("로그인 성공 후 세션 1개 생성")
-    void findByIdSessionTest() throws Exception {
-
-        Login login = Login.builder()
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        User user = User.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        userRepository.save(user);
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(login)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        assertThat(user.getSessions().size()).isEqualTo(1L);
-
-    }
+//    @Test
+//    @DisplayName("로그인 성공")
+//    void findByIdTest() throws Exception {
+//
+//        Login login = Login.builder()
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(login)))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 
 
-    @Test
-    @DisplayName("로그인 성공 후 session 응답")
-    void findByIdSessionResponseTest() throws Exception {
+//    @Test
+//    @Transactional
+//    @DisplayName("로그인 성공 후 세션 1개 생성")
+//    void findByIdSessionTest() throws Exception {
+//
+//        Login login = Login.builder()
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(login)))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//
+//        assertThat(user.getSessions().size()).isEqualTo(1L);
+//    }
 
-        Login login = Login.builder()
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
 
-        User user = User.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        userRepository.save(user);
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(login)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken", Matchers.notNullValue()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
+//    @Test
+//    @DisplayName("로그인 성공 후 session 응답")
+//    void findByIdSessionResponseTest() throws Exception {
+//
+//        Login login = Login.builder()
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(login)))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken", Matchers.notNullValue()))
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 
 
 // DB의 저장된 세션값을 이용해서 권한을 인증받는 테스트. 지금은 쿠키로 사용.
@@ -175,61 +174,61 @@ class AuthControllerTest {
 //    }
 
 
-    @Test
-    @DisplayName("/auth/cookieLogin, 로그인 성공 후, 쿠키 발급")
-    void authCookieLogin() throws Exception {
+//    @Test
+//    @DisplayName("/auth/cookieLogin, 로그인 성공 후, 쿠키 발급")
+//    void authCookieLogin() throws Exception {
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        Login login = Login.builder()
+//                .email(user.getEmail())
+//                .password(user.getPassword())
+//                .build();
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
+//                        .content(objectMapper.writeValueAsString(login))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.cookie().value("SESSION", Matchers.notNullValue()))
+//                .andExpect(MockMvcResultMatchers.cookie().domain("SESSION", "localhost"))
+//                .andExpect(MockMvcResultMatchers.cookie().path("SESSION", "/"))
+//                .andExpect(MockMvcResultMatchers.cookie().maxAge("SESSION", 2592000))
+//                .andExpect(MockMvcResultMatchers.cookie().httpOnly("SESSION", true))
+//                .andExpect(MockMvcResultMatchers.cookie().sameSite("SESSION", "strict"))
+//                .andExpect(MockMvcResultMatchers.cookie().secure("SESSION", false))
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 
-        User user = User.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
 
-        userRepository.save(user);
-
-        Login login = Login.builder()
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .build();
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
-                        .content(objectMapper.writeValueAsString(login))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.cookie().value("SESSION", Matchers.notNullValue()))
-                .andExpect(MockMvcResultMatchers.cookie().domain("SESSION", "localhost"))
-                .andExpect(MockMvcResultMatchers.cookie().path("SESSION", "/"))
-                .andExpect(MockMvcResultMatchers.cookie().maxAge("SESSION", 2592000))
-                .andExpect(MockMvcResultMatchers.cookie().httpOnly("SESSION", true))
-                .andExpect(MockMvcResultMatchers.cookie().sameSite("SESSION", "strict"))
-                .andExpect(MockMvcResultMatchers.cookie().secure("SESSION", false))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-
-    @Test
-    @DisplayName("/auth/cookieLogin, 로그인 실패")
-    void authCookieLoginFail() throws Exception {
-
-        User user = User.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        userRepository.save(user);
-
-        Login login = Login.builder()
-                .email(user.getEmail())
-                .password("12345")
-                .build();
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
-                        .content(objectMapper.writeValueAsString(login))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
+//    @Test
+//    @DisplayName("/auth/cookieLogin, 로그인 실패")
+//    void authCookieLoginFail() throws Exception {
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        Login login = Login.builder()
+//                .email(user.getEmail())
+//                .password("12345")
+//                .build();
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
+//                        .content(objectMapper.writeValueAsString(login))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+//    }
 
 
     @Test
