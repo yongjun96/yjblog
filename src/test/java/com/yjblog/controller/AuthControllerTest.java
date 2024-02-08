@@ -9,6 +9,7 @@ import com.yjblog.exception.Unauthorized;
 import com.yjblog.repository.SessionRepository;
 import com.yjblog.repository.UserRepository;
 import com.yjblog.request.Login;
+import com.yjblog.request.Signup;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -225,6 +226,49 @@ class AuthControllerTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/cookieLogin")
                         .content(objectMapper.writeValueAsString(login))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
+    @Test
+    @DisplayName("/auth/signup, 회원가입 성공")
+    void authSignup() throws Exception {
+
+        Signup signup = Signup.builder()
+                .name("yongjun")
+                .email("yongjun96@gmail.com")
+                .password("1234")
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/signup")
+                        .content(objectMapper.writeValueAsString(signup))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DisplayName("/auth/signup, 회원가입 실패")
+    void authSignupFail() throws Exception {
+
+        User user = User.builder()
+                .name("yongjun")
+                .email("yongjun96@gmail.com")
+                .password("1234")
+                .build();
+
+        userRepository.save(user);
+
+        Signup signup = Signup.builder()
+                .name("yongjun")
+                .email(user.getEmail())
+                .password("1234")
+                .build();
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/signup")
+                        .content(objectMapper.writeValueAsString(signup))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());

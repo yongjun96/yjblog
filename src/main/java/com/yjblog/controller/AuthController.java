@@ -2,6 +2,7 @@ package com.yjblog.controller;
 
 import com.yjblog.config.jwt.JwtProvider;
 import com.yjblog.request.Login;
+import com.yjblog.request.Signup;
 import com.yjblog.response.SessionResponse;
 import com.yjblog.service.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
+import java.util.Date;
+
+import static com.yjblog.config.jwt.JwtProvider.ACCESS_TIME;
 
 @Slf4j
 @RestController
@@ -72,12 +76,21 @@ public class AuthController {
         // json 아이디/비밀번호
         log.info(">>> login : {}", login);
 
+        Date now = new Date();
+
         String jws = Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .signWith(jwtProvider.jwtSecretKey())
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + ACCESS_TIME))
                 .compact();
 
         return new SessionResponse(jws);
+    }
+
+    @PostMapping("/auth/signup")
+    public void signup(@RequestBody Signup signup){
+        authService.signup(signup);
     }
 
 }

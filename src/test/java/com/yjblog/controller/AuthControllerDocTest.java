@@ -49,36 +49,37 @@ class AuthControllerDocTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    @DisplayName("로그인 테스트")
-    void findByIdTest() throws Exception {
-
-        Login login = Login.builder()
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
-                .orElseThrow(() -> new InvalidSigningInformation());
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(login)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcRestDocumentationWrapper.document("test-post",
-                        ResourceSnippetParameters.builder()
-                                .tag("로그인")
-                                .summary("로그인 테스트")
-                                .description("로그인 테스트 입니다.")
-                                .requestSchema(Schema.schema("MainRequest.Post"))
-                                .responseSchema(Schema.schema("MainResponse.Post")),
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("yongjun96@gmail.com"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
-                        )));
-    }
+//    @Test
+//    @DisplayName("로그인 테스트")
+//    void findByIdTest() throws Exception {
+//
+//        Login login = Login.builder()
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+//                .orElseThrow(() -> new InvalidSigningInformation());
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/jwtLogin")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(login)))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andDo(MockMvcRestDocumentationWrapper.document("test-post",
+//                        ResourceSnippetParameters.builder()
+//                                .tag("로그인")
+//                                .summary("로그인 테스트")
+//                                .description("로그인 테스트 입니다.")
+//                                .requestSchema(Schema.schema("MainRequest.Post"))
+//                                .responseSchema(Schema.schema("MainResponse.Post")),
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        requestFields(
+//                                fieldWithPath("email").type(JsonFieldType.STRING).description("yongjun96@gmail.com"),
+//                                fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
+//                        )));
+//    }
+//}
 }

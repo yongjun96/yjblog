@@ -35,5 +35,5 @@ Content-Type: application/json
 
 GET http://localhost:8080/foo
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIn0.X_zImTmcx4us9YcuMVIrpLGHeXlKYXcXrVv1LQ3bpb7T1fesvyvS1RVydWsIM_X4PllCJUWSN8VKJoCq8HwInw
+Authorization: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzA3Mjk0ODY4LCJleHAiOjE3MDczMTY0Njh9.Jan0bZktkLyEPVdAdTa9iVbzohXNNdDfD3iThG1YKxMKp-u4aD1Of9dD9zmr4wVnaifO2tDwUK_7kIIkWtCQ0g
 //cookie: SESSION=bccf0b0b-6278-41f4-bb0c-91ab9ed9ed29
