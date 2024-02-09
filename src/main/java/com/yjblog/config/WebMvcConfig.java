@@ -1,7 +1,6 @@
 package com.yjblog.config;
 
 import com.yjblog.config.jwt.JwtProvider;
-import com.yjblog.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,8 +13,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
-
-    private final SessionRepository sessionRepository;
 
     private final JwtProvider jwtProvider;
 

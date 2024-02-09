@@ -55,9 +55,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    //Spring Security
+    // Spring Security and Test
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-test'
+
+    // Spring security Session
+    //implementation 'org.springframework.session:spring-session-jdbc'
 
     // 비밀번호 암호화
     implementation 'org.springframework.security:spring-security-crypto'
@@ -87,8 +90,15 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+    // mustach 간단한 화면 구현을 위한 플러그인
+    implementation 'org.springframework.boot:spring-boot-starter-mustache'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
+
+    // mysql
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'

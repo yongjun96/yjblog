@@ -1,0 +1,22 @@
+### 회원가입
+POST http://localhost:8080/security/auth/signup
+Content-Type: application/json
+
+{
+  "name": "yongJun",
+  "email": "yongjun96@gmail.com",
+  "password": "1234"
+}
+
+
+### 로그인
+
+POST http://localhost:8080/security/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=yongjun96@gmail.com&password=1234&remember=1
+
+
+### 메인페이지
+GET http://localhost:8080
+

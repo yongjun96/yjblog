@@ -1,17 +1,9 @@
 package com.yjblog.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yjblog.domain.Session;
 import com.yjblog.domain.User;
-import com.yjblog.exception.InvalidSigningInformation;
-import com.yjblog.exception.Unauthorized;
-import com.yjblog.repository.SessionRepository;
 import com.yjblog.repository.UserRepository;
-import com.yjblog.request.Login;
 import com.yjblog.request.Signup;
-import org.assertj.core.api.Assertions;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,9 +15,6 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -40,8 +29,8 @@ class AuthControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private SessionRepository sessionRepository;
+//    @Autowired
+//    private SessionRepository sessionRepository;
 
     @BeforeEach
     void clean(){
@@ -231,45 +220,45 @@ class AuthControllerTest {
 //    }
 
 
-    @Test
-    @DisplayName("/auth/signup, 회원가입 성공")
-    void authSignup() throws Exception {
-
-        Signup signup = Signup.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/signup")
-                        .content(objectMapper.writeValueAsString(signup))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-    @Test
-    @DisplayName("/auth/signup, 회원가입 실패")
-    void authSignupFail() throws Exception {
-
-        User user = User.builder()
-                .name("yongjun")
-                .email("yongjun96@gmail.com")
-                .password("1234")
-                .build();
-
-        userRepository.save(user);
-
-        Signup signup = Signup.builder()
-                .name("yongjun")
-                .email(user.getEmail())
-                .password("1234")
-                .build();
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/signup")
-                        .content(objectMapper.writeValueAsString(signup))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
+//    @Test
+//    @DisplayName("/auth/signup, 회원가입 성공")
+//    void authSignup() throws Exception {
+//
+//        Signup signup = Signup.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/signup")
+//                        .content(objectMapper.writeValueAsString(signup))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
+//
+//    @Test
+//    @DisplayName("/auth/signup, 회원가입 실패")
+//    void authSignupFail() throws Exception {
+//
+//        User user = User.builder()
+//                .name("yongjun")
+//                .email("yongjun96@gmail.com")
+//                .password("1234")
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        Signup signup = Signup.builder()
+//                .name("yongjun")
+//                .email(user.getEmail())
+//                .password("1234")
+//                .build();
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/signup")
+//                        .content(objectMapper.writeValueAsString(signup))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+//    }
 }

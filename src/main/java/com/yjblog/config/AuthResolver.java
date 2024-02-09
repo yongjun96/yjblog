@@ -3,7 +3,6 @@ package com.yjblog.config;
 import com.yjblog.config.data.UserSession;
 import com.yjblog.config.jwt.JwtProvider;
 import com.yjblog.exception.Unauthorized;
-import com.yjblog.repository.SessionRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -25,7 +24,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver {
 
-    private final SessionRepository sessionRepository;
     private final JwtProvider jwtProvider;
     private final AppConfig appConfig;
 

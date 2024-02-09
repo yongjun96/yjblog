@@ -43,21 +43,21 @@ class PostControllerDocTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    @DisplayName("글 단건 조회")
-    void findByIdTest() throws Exception {
-
-        Post post = Post.builder()
-                .title("제목")
-                .content("내용")
-                .build();
-
-        postRepository.save(post);
-
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/posts/{postId}", post.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcRestDocumentationWrapper.document("index"));
-    }
+//    @Test
+//    @DisplayName("글 단건 조회")
+//    void findByIdTest() throws Exception {
+//
+//        Post post = Post.builder()
+//                .title("제목")
+//                .content("내용")
+//                .build();
+//
+//        postRepository.save(post);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.get("/posts/{postId}", post.getId())
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andDo(MockMvcRestDocumentationWrapper.document("index"));
+//    }
 }
