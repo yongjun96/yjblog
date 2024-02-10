@@ -43,7 +43,6 @@ public class AuthController {
 //
 //        // 토큰을 응답
 //        return new SessionResponse(accessToken);
-//
 //    }
 
 //    @PostMapping("/auth/cookieLogin")
@@ -73,28 +72,28 @@ public class AuthController {
 //    }
 
 
-//    @PostMapping("/auth/jwtLogin")
-//    public SessionResponse jwtLogin(@RequestBody @Valid Login login){
-//
-//        Long userId = authService.jwtSigning(login);
-//        // json 아이디/비밀번호
-//        log.info(">>> login : {}", login);
-//
-//        Date now = new Date();
-//
-//        String jws = Jwts.builder()
-//                .setSubject(String.valueOf(userId))
-//                .signWith(jwtProvider.jwtSecretKey())
-//                .setIssuedAt(now)
-//                .setExpiration(new Date(now.getTime() + ACCESS_TIME))
-//                .compact();
-//
-//        return new SessionResponse(jws);
-//    }
+    @PostMapping("/auth/jwtLogin")
+    public SessionResponse jwtLogin(@RequestBody @Valid Login login){
 
-//    @PostMapping("/auth/signup")
-//    public void signup(@RequestBody Signup signup){
-//        authService.signup(signup);
-//    }
+        Long userId = authService.jwtSigning(login);
+        // json 아이디/비밀번호
+        log.info(">>> login : {}", login);
+
+        Date now = new Date();
+
+        String jws = Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .signWith(jwtProvider.jwtSecretKey())
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + ACCESS_TIME))
+                .compact();
+
+        return new SessionResponse(jws);
+    }
+
+    @PostMapping("/auth/signup")
+    public void signup(@RequestBody Signup signup){
+        authService.signup(signup);
+    }
 
 }

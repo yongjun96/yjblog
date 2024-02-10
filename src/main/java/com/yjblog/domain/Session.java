@@ -26,7 +26,7 @@ public class Session {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private User user;
-
+//
 //    @Builder
 //    public Session(User user) {
 //        //랜덤으로 UUID를 만들어 준다.

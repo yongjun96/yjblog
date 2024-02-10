@@ -24,7 +24,6 @@ public class JoinService {
                 .email(signup.getEmail())
                 .password(passwordEncoder.encode(signup.getPassword()))
                 .name(signup.getName())
-                .role(Role.ADMIN)
                 .build();
 
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
