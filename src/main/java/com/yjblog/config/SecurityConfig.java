@@ -71,14 +71,14 @@ public class SecurityConfig {
                         .access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAnyAuthority('WRITE')")) // 관리자 역할도 있고 쓰기 권한도 있는 사람만 접근 가능
                         .anyRequest().authenticated())
 
-                .formLogin((from) -> from
-                        .loginPage("/security/auth/login") // 로그인 페이지의 주소
-                        .loginProcessingUrl("/security/auth/login") // 값을 받아서 검증하는 주소
-                        .usernameParameter("username") // input name
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/security/auth/") // 성공했을 때 이동할 주소
-                        .failureHandler(new LoginFailHandler(objectMapper))
-                )
+//                .formLogin((from) -> from
+//                        .loginPage("/security/auth/login") // 로그인 페이지의 주소
+//                        .loginProcessingUrl("/security/auth/login") // 값을 받아서 검증하는 주소
+//                        .usernameParameter("username") // input name
+//                        .passwordParameter("password")
+//                        .defaultSuccessUrl("/security/auth/") // 성공했을 때 이동할 주소
+//                        .failureHandler(new LoginFailHandler(objectMapper))
+//                )
 
                 .exceptionHandling(e -> {
                     e.accessDeniedHandler(new Http403Handler(objectMapper));

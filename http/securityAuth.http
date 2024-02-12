@@ -8,6 +8,18 @@ Content-Type: application/json
   "password": "1234"
 }
 
+
+### 로그인 Json
+
+POST http://localhost:8080/security/auth/login
+Content-Type: application/json
+
+{
+  "email": "yongjun96@gmail.com",
+  "password": "1234"
+}
+
+
 ### 로그인
 
 POST http://localhost:8080/security/auth/login
