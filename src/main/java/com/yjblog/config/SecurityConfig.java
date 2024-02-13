@@ -1,39 +1,34 @@
 package com.yjblog.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yjblog.config.filter.EmailPasswordAuthFilter;
 import com.yjblog.config.handler.Http401Handler;
 import com.yjblog.config.handler.Http403Handler;
 import com.yjblog.config.handler.LoginFailHandler;
 import com.yjblog.domain.User;
 import com.yjblog.repository.UserRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
-import java.io.IOException;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
@@ -44,10 +39,12 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @Slf4j
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // prePostEnabled = true (default) : @PreAuthorize("hasRole('ROLE_USER')") 컨트롤러에 직접 명령 가능
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
@@ -65,12 +62,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/security/auth/login").permitAll()
                         .requestMatchers("/security/auth/signup").permitAll()
-                        .requestMatchers("/security/auth/user").hasAnyRole("USER", "ADMIN")
+                        //.requestMatchers("/security/auth/user").hasAnyRole("USER", "ADMIN")
                         //.requestMatchers("/security/auth/admin").hasRole("ADMIN")
                         .requestMatchers("/security/auth/admin")
                         .access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAnyAuthority('WRITE')")) // 관리자 역할도 있고 쓰기 권한도 있는 사람만 접근 가능
                         .anyRequest().authenticated())
 
+                .addFilterBefore(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 //                .formLogin((from) -> from
 //                        .loginPage("/security/auth/login") // 로그인 페이지의 주소
 //                        .loginProcessingUrl("/security/auth/login") // 값을 받아서 검증하는 주소
@@ -93,6 +91,35 @@ public class SecurityConfig {
 
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
+    }
+
+    @Bean
+    public EmailPasswordAuthFilter usernamePasswordAuthenticationFilter(){
+
+        EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter("/security/auth/login", objectMapper);
+        filter.setAuthenticationManager(authenticationManager()); // custom 한 메서드 호출
+        filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/security/auth/"));
+        filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
+        filter.setSecurityContextRepository(new HttpSessionSecurityContextRepository()); // 세션이 발급되기 때문에 꼭 있어야 함.
+
+        // org.springframework.session 으로 사용.
+        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+        rememberMeServices.setAlwaysRemember(true);
+        rememberMeServices.setValiditySeconds(3600 * 24 *30); // 유효기간 한달
+
+        filter.setRememberMeServices(rememberMeServices);
+
+        return filter;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(){
+
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService(userRepository));
+        provider.setPasswordEncoder(passwordEncoder());
+
+        return new ProviderManager(provider);
     }
 
     @Bean
