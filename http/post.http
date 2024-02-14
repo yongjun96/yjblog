@@ -4,3 +4,22 @@
 GET http://localhost:8080/foo
 Content-Type: application/json
 cookie: 7a808de8-48aa-498f-93c7-40cebb521934
+
+
+### 게시글 작성
+# 인텔리제이 http 요청 알아보기
+
+POST http://localhost:8080/posts
+Content-Type: application/json
+
+{
+  "title": "제목입니다.",
+  "content": "내용입니다."
+}
+
+
+### 게시글 삭젝
+# 인텔리제이 http 요청 알아보기
+
+DELETE http://localhost:8080/posts/1
+Content-Type: application/json

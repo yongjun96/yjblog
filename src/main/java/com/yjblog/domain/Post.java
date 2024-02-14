@@ -23,19 +23,23 @@ public class Post {
     @Lob // LongText
     private String content;
 
-    @Builder
-    public Post(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public void edit(String title, String content) {
+    @Builder
+    public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
+        this.user = user;
     }
 
     public void edit(PostEdit postEdit) {
         this.title = postEdit.getTitle() != null ? postEdit.getTitle() : this.title;
         this.content = postEdit.getContent() != null ? postEdit.getContent() : this.content;
+    }
+
+    public Long getUserId(){
+        return this.user.getId();
     }
 }

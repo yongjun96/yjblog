@@ -22,7 +22,7 @@ public class Http401Handler implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.info("[인증요류] 로그인이 필요합니다.");
+        log.info("[인증오류] 로그인이 필요합니다.");
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("401")

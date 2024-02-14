@@ -23,7 +23,7 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.error("[안증오류] 아이디 혹은 비밀번호가 올바르지 않습니다.");
+        log.error("[인증오류] 아이디 혹은 비밀번호가 올바르지 않습니다.");
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("400")

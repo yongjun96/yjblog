@@ -5,6 +5,7 @@ import com.yjblog.config.filter.EmailPasswordAuthFilter;
 import com.yjblog.config.handler.Http401Handler;
 import com.yjblog.config.handler.Http403Handler;
 import com.yjblog.config.handler.LoginFailHandler;
+import com.yjblog.config.handler.LoginSuccessHandler;
 import com.yjblog.domain.User;
 import com.yjblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,6 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // prePostEnabled = true (default) : @PreAuthorize("hasRole('ROLE_USER')") 컨트롤러에 직접 명령 가능
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -60,13 +60,13 @@ public class SecurityConfig {
 
         return http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/security/auth/login").permitAll()
-                        .requestMatchers("/security/auth/signup").permitAll()
+                        //.requestMatchers("/security/auth/login").permitAll()
+                        //.requestMatchers("/security/auth/signup").permitAll()
                         //.requestMatchers("/security/auth/user").hasAnyRole("USER", "ADMIN")
                         //.requestMatchers("/security/auth/admin").hasRole("ADMIN")
                         .requestMatchers("/security/auth/admin")
                         .access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAnyAuthority('WRITE')")) // 관리자 역할도 있고 쓰기 권한도 있는 사람만 접근 가능
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
 
                 .addFilterBefore(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 //                .formLogin((from) -> from
@@ -98,7 +98,8 @@ public class SecurityConfig {
 
         EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter("/security/auth/login", objectMapper);
         filter.setAuthenticationManager(authenticationManager()); // custom 한 메서드 호출
-        filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/security/auth/"));
+        //filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/security/auth/")); // 로그인 성공 시 url 이동
+        filter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper)); // 로그인 성공 시 Json 으로 값을 넘겨 주거나 다른 행동을 할 custom handler 생성
         filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
         filter.setSecurityContextRepository(new HttpSessionSecurityContextRepository()); // 세션이 발급되기 때문에 꼭 있어야 함.
 

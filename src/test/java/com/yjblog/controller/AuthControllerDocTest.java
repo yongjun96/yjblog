@@ -23,6 +23,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -49,8 +52,12 @@ class AuthControllerDocTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
 //    @Test
 //    @DisplayName("로그인 테스트")
+//    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
 //    void findByIdTest() throws Exception {
 //
 //        Login login = Login.builder()
@@ -58,10 +65,10 @@ class AuthControllerDocTest {
 //                .password("1234")
 //                .build();
 //
-//        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
-//                .orElseThrow(() -> new InvalidSigningInformation());
+////        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+////                .orElseThrow(() -> new InvalidSigningInformation());
 //
-//        mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/jwtLogin")
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/security/auth/login")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .accept(MediaType.APPLICATION_JSON)
 //                        .content(objectMapper.writeValueAsString(login)))
@@ -81,5 +88,5 @@ class AuthControllerDocTest {
 //                                fieldWithPath("password").type(JsonFieldType.STRING).description("1234")
 //                        )));
 //    }
-//}
 }
+

@@ -2,7 +2,9 @@ package com.yjblog.service;
 
 import com.yjblog.domain.Post;
 import com.yjblog.exception.PostNotFound;
+import com.yjblog.exception.UserNotFound;
 import com.yjblog.repository.PostRepository;
+import com.yjblog.repository.UserRepository;
 import com.yjblog.request.PostCreate;
 import com.yjblog.request.PostSearch;
 import com.yjblog.response.PostEdit;
@@ -21,11 +23,17 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     //글 생성
-    public void write(PostCreate postCreate){
+    public void write(Long userId, PostCreate postCreate){
+
+        var user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
+
         //postCreate -> Entity
         Post post = Post.builder()
+                .user(user)
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
                 .build();
