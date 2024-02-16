@@ -29,19 +29,20 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Post> posts;
+    private List<Post> posts =new ArrayList<>();
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 //    private List<Session> sessions = new ArrayList<>();
 
     @Builder
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     /**

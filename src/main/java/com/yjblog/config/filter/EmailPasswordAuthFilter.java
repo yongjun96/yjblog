@@ -17,7 +17,6 @@ public class EmailPasswordAuthFilter  extends AbstractAuthenticationProcessingFi
     private final ObjectMapper objectMapper;
 
     public EmailPasswordAuthFilter(String loginUrl, ObjectMapper objectMapper) {
-        //외부에서 받아와도 되는데 일단 내부에서 반환하는 걸로
         super(loginUrl);
         this.objectMapper = objectMapper;
     }

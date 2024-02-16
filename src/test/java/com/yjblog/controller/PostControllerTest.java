@@ -1,20 +1,24 @@
 package com.yjblog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yjblog.config.YjblogMockUser;
 import com.yjblog.domain.Post;
+import com.yjblog.domain.User;
+import com.yjblog.exception.UserNotFound;
 import com.yjblog.repository.PostRepository;
+import com.yjblog.repository.UserRepository;
 import com.yjblog.request.PostCreate;
 import com.yjblog.response.PostEdit;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -34,21 +38,29 @@ class PostControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
+    @AfterEach
     void clean(){
         //클린 수행
         postRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
     // security 의 인증을 만들어서 테스트
     // 항목들을 custom 할 수 있도록 기능을 제공 어노테이션 직접 만들어야 함
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser // config -> YjblogMockSecurityContext 에서 디폴트 값을 세팅 하였기 때문에 검증 통과
+    //@WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"}) // @AuthenticationPrincipal 를 인식하지 못함
     @DisplayName("글 작성 /posts 요청")
     void postsTest() throws Exception {
 
@@ -81,7 +93,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("글 작성 /posts 요청시 title값은 필수다.")
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser
     void titleNullPostsTest() throws Exception {
 
         //given
@@ -107,7 +119,8 @@ class PostControllerTest {
 
     @Test
     @DisplayName("/posts 요청시 PostEntity 저장")
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser
+    //@WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
     void postCreate() throws Exception {
 
         //given
@@ -185,12 +198,17 @@ class PostControllerTest {
 
     @Test
     @DisplayName("/posts/{postId} 글 수정")
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser
     void postEdit() throws Exception {
+
+        //given
+        User user = userRepository.findByEmail("yongjun96@gmail.com")
+                .orElseThrow(UserNotFound::new);
 
         Post post = Post.builder()
                 .title("제목임")
                 .content("내용임")
+                .user(user)
                 .build();
 
         postRepository.save(post);
@@ -212,12 +230,18 @@ class PostControllerTest {
 
     @Test
     @DisplayName("글 삭제")
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser
+    //@WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
     void postDelete() throws Exception {
+
+        //given
+        User user = userRepository.findByEmail("yongjun96@gmail.com")
+                .orElseThrow(UserNotFound::new);
 
         Post post = Post.builder()
                 .title("제목임")
                 .content("내용임")
+                .user(user)
                 .build();
 
         postRepository.save(post);
@@ -240,7 +264,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 게시글 수정")
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser
     void PostEditFail() throws Exception {
 
         PostEdit postEdit = PostEdit.builder()
@@ -260,7 +284,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("게시글 작성시 제목에 바보는 포함될 수 없다.")
-    @WithMockUser(username = "yongjun96@gmail.com", roles = {"ADMIN"})
+    @YjblogMockUser
     void PostCreateContains() throws Exception {
 
         PostCreate postCreate = PostCreate.builder()

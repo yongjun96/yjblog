@@ -62,7 +62,7 @@ public class SecurityConfig {
                         //.requestMatchers("/security/auth/user").hasAnyRole("USER", "ADMIN")
                         //.requestMatchers("/security/auth/admin").hasRole("ADMIN")
                         .requestMatchers("/security/auth/admin")
-                        .access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAnyAuthority('WRITE')")) // 관리자 역할도 있고 쓰기 권한도 있는 사람만 접근 가능
+                        .access(new WebExpressionAuthorizationManager("hasRole(Role.ADMIN) AND hasAnyAuthority('WRITE')")) // 관리자 역할도 있고 쓰기 권한도 있는 사람만 접근 가능
                         .anyRequest().permitAll())
 
                 .addFilterBefore(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
