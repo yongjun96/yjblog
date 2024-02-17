@@ -84,6 +84,9 @@ dependencies {
     // Swagger 의존성 추가
     swaggerUI 'org.webjars:swagger-ui:4.11.1'
 
+    // mockito
+    testImplementation 'org.mockito:mockito-core:4.8.0'
+
     // QueryDSL Implementation
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"

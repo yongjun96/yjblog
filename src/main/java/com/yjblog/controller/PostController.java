@@ -3,18 +3,16 @@ package com.yjblog.controller;
 import com.yjblog.config.UserPrincipal;
 import com.yjblog.config.data.UserSession;
 import com.yjblog.domain.Post;
-import com.yjblog.exception.InvalidRequest;
+import com.yjblog.request.PostCreate;
 import com.yjblog.request.PostSearch;
 import com.yjblog.response.PostEdit;
-import com.yjblog.service.PostService;
-import com.yjblog.request.PostCreate;
 import com.yjblog.response.PostResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import com.yjblog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -77,5 +75,18 @@ public class PostController {
     @DeleteMapping("/posts/{postId}")
     public void postDelete(@PathVariable Long postId){
         postService.delete(postId);
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<PostResponse> findPost(@PathVariable(name = "postId")Long postId){
+
+        PostResponse postResponse = postService.get(postId);
+
+        var response = ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header("x-custom", "hi")
+                .body(postResponse);
+
+        return response;
     }
 }

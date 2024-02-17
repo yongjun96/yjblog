@@ -5,6 +5,7 @@ import com.yjblog.domain.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+
 import java.util.List;
 
 public class UserPrincipal extends User {
@@ -16,8 +17,9 @@ public class UserPrincipal extends User {
 
     public UserPrincipal(com.yjblog.domain.User user){
         super(user.getEmail(), user.getPassword(), List.of(
-                new SimpleGrantedAuthority("ROLE_"+ Role.ADMIN),
-                new SimpleGrantedAuthority("WRITE")));
+                new SimpleGrantedAuthority("ROLE_"+ user.getRole())
+                //, new SimpleGrantedAuthority("WRITE")
+        ));
         this.userId = user.getId();
     }
 

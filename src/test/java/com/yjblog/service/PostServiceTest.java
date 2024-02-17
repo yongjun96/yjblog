@@ -13,6 +13,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,16 +26,27 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
+//@ExtendWith(MockitoExtension.class) // mockito 사용
 class PostServiceTest {
 
-    @Autowired
-    private PostService postService;
+
+//    @Mock // 의존성 제거
+//    private PostRepository postRepository;
+//
+//    @Mock
+//    private UserRepository userRepository;
+//
+//    @InjectMocks // @Mock 으로 지정된 객체의 의존성으로 주입
+//    private PostService postService;
 
     @Autowired
     private PostRepository postRepository;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostService postService;
 
     @BeforeEach
     void clean(){
