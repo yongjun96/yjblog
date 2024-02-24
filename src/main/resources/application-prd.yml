@@ -1,0 +1,64 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# 애플리케이션 실행 시 session 테이블을 자동으로 생성
+# SPRING_SESSION 테이블이 자동으로 생성되어 세션 정보를 저장
+  session:
+    jdbc:
+      initialize-schema: always
+
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이지를 1부터 시작 (default 0)
+        default-page-size: 5 # 한 페이지 당 표시할 데이터 수
+
+#  datasource:
+#    url: jdbc:h2:mem:yjblog
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://yongjun-rds-mysql8.cpowku6g4wpx.ap-northeast-2.rds.amazonaws.com:3306/labfinaldb
+    username: admin
+    password: admin!1234
+
+
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    defer-datasource-initialization: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+    database: mysql
+
+#  sql:
+#    init:
+#      mode: always
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    url: /docs/openapi3.json
+    path: /docs/swagger
+
+custom:
+  jwt:
+    secretKey: javaSpringBootProjectProtectedKimYongJunBlogJsonWebTokenSecretKey
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
