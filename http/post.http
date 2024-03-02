@@ -26,5 +26,5 @@ Content-Type: application/json
 
 ### 게시글 조회 테스트
 
-GET http://localhost:8080/post/2
+GET http://localhost:8080/post/1
 Content-Type: application/json

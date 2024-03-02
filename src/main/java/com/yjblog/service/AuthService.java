@@ -65,6 +65,7 @@ public class AuthService {
                 .name(signup.getName())
                 .password(password)
                 .email(signup.getEmail())
+                .role(signup.getRole())
                 .build();
 
         return userRepository.save(user);

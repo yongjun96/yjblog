@@ -41,7 +41,7 @@ public class SpringSecurityAuthController {
 
     // Spring EL : 문법 사용
     // security 의 @EnableMethodSecurity 기능을 사용해서 ROLE 추가
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public String admin(){
         return "관리자 페이지입니다.";
