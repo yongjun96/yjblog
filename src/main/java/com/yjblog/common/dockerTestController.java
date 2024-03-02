@@ -11,4 +11,9 @@ public class dockerTestController {
         return "HI!! docker test~~";
     }
 
+    @GetMapping("/test")
+    public String dockerTestPage(){
+        return "페이지 전환이 자유롭게 되나 테스트";
+    }
+
 }
