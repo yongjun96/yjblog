@@ -25,7 +25,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://yongjun-rds-mysql8.cpowku6g4wpx.ap-northeast-2.rds.amazonaws.com:3306/labfinaldb
+    url: jdbc:mysql://yongjun-rds-mysql8.cpowku6g4wpx.ap-northeast-2.rds.amazonaws.com:3306/yjblog
     username: admin
     password: admin!1234
 
