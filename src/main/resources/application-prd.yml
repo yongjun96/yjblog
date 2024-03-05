@@ -38,7 +38,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    defer-datasource-initialization: true
+#    defer-datasource-initialization: true
     database: mysql
 
 #  sql:
